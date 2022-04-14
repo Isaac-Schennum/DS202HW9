@@ -1,0 +1,82 @@
+---
+title: 'Homework #9'
+author: "Isaac Schennum (no team members)"
+repo: "https://github.com/Isaac-Schennum/DS202HW9"
+date: "4/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 1:
+
+```{r}
+library(tidyverse)
+av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+head(av, 35)
+```
+
+```{r}
+deaths <- av
+deaths <- deaths %>% mutate(Time = 1)
+deaths <- deaths %>% mutate(Death = "no")
+deaths <- deaths %>% mutate(Time = ifelse(Death2 == "", Time, 2))
+deaths <- deaths %>% mutate(Time = ifelse(Death3 == "", Time, 3))
+deaths <- deaths %>% mutate(Time = ifelse(Death4 == "", Time, 4))
+deaths <- deaths %>% mutate(Time = ifelse(Death5 == "", Time, 5))
+deaths <- deaths %>% mutate(Death = ifelse(Time == 1 & Death1 == "YES", "yes", Death))
+deaths <- deaths %>% mutate(Death = ifelse(Time == 2 & Death2 == "YES", "yes", Death))
+deaths <- deaths %>% mutate(Death = ifelse(Time == 3 & Death3 == "YES", "yes", Death))
+deaths <- deaths %>% mutate(Death = ifelse(Time == 4 & Death4 == "YES", "yes", Death))
+deaths <- deaths %>% mutate(Death = ifelse(Time == 5 & Death5 == "YES", "yes", Death))
+deaths <- subset(deaths, select = -c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21))
+```
+
+```{r}
+returns <- av
+returns <- returns %>% mutate(Time = 0)
+returns <- returns %>% mutate(Return = "yes")
+returns <- returns %>% mutate(Time = ifelse(Return1 == "", Time, 1))
+returns <- returns %>% mutate(Time = ifelse(Return2 == "", Time, 2))
+returns <- returns %>% mutate(Time = ifelse(Return3 == "", Time, 3))
+returns <- returns %>% mutate(Time = ifelse(Return4 == "", Time, 4))
+returns <- returns %>% mutate(Time = ifelse(Return5 == "", Time, 5))
+returns <- returns %>% mutate(Return = ifelse(Time == 0, "never died", Return))
+returns <- returns %>% mutate(Return = ifelse(Time == 1 & Return1 == "NO", "no", Return))
+returns <- returns %>% mutate(Return = ifelse(Time == 2 & Return2 == "NO", "no", Return))
+returns <- returns %>% mutate(Return = ifelse(Time == 3 & Return3 == "NO", "no", Return))
+returns <- returns %>% mutate(Return = ifelse(Time == 4 & Return4 == "NO", "no", Return))
+returns <- returns %>% mutate(Return = ifelse(Time == 5 & Return5 == "NO", "no", Return))
+returns <- subset(returns, select = -c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21))
+```
+
+```{r}
+head(deaths, 35)
+```
+
+Time: Time character was last seen (counted in appearances - each death marks a new appearance; 1 through 5)
+
+Death: Did the character die the last time they were seen? (yes/no)
+
+```{r}
+head(returns, 35)
+```
+
+Time: Time character last returned/didn't return (counted in deaths; 0 through 5)
+
+Return: Did the character return the last time they died? (yes/no/never died)
+
+## Part 2:
+
+Claim being fact-checked: Out of 173 listed Avengers, my analysis found that 69 had died at least one time after they joined the team.
+
+```{r}
+diedAtLeastOneTime <- returns %>% filter(Return != "never died")
+summary(diedAtLeastOneTime)
+```
+
+Length = 69 (69 Avengers died at least one time)
+
+The claim passed the fact check.
